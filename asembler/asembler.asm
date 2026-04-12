@@ -132,8 +132,31 @@ decy:
 	mov ax,[zm1]
 	mov bx,10
 	div bx
-	mov dl,ah
 	add dl,30h
+	push edx
+	div bx
+	add dl,30h
+	push edx
+	div bx
+	add dl,30h
+	push edx
+	div bx
+	add dl,30h
+	push edx
+	div bx
+	add dl,30h
+	mov [ConsoleChar],dl
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	mov [ConsoleChar],dl
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	mov [ConsoleChar],dl
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	mov [ConsoleChar],dl
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
 	mov [ConsoleChar],dl
 	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
 
