@@ -36,14 +36,14 @@ main proc
 		mov [consoleOutHandle],eax
 		INVOKE SetConsoleMode,[consoleInHandle], 0
 		INVOKE FlushConsoleInputBuffer, [consoleInHandle]
-	mov zm1,0808fh
+	mov zm1,0000h
 binar:
 	ustaw_kursor 0,0
 	INVOKE WriteConsole, [consoleOutHandle], ADDR txt1, LENGTHOF txt1, 0, 0
 	mov bx,[zm1]
-	mov ecx,8
+		mov ecx,8
 binh_1:
-	push ecx
+		push ecx
 	rcl bh,1
 	jc binh_2
 	mov [ConsoleChar],'0'
@@ -52,8 +52,8 @@ binh_2:
 	mov [ConsoleChar],'1'
 binh_3:
 	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0 
-	pop ecx
-	loop binh_1
+		pop ecx
+		loop binh_1
 
 mov ecx,8
 
@@ -115,7 +115,7 @@ oct:
 
 
 
-cos3:
+decym:
 	INVOKE WriteConsole, [consoleOutHandle], ADDR txt3, LENGTHOF txt3, 0, 0
 	mov bx,[zm1] ; znak
 	shr bx,15
@@ -227,8 +227,21 @@ wejscie:
 	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
 	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
 	ustaw_kursor 6,31
+	jmp zakr_znak
+
+usun1:
+	ustaw_kursor 6,31
+	shr edx,16
+	shl edx,16
+	mov [ConsoleChar],20h
+	push edx
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	ustaw_kursor 6,31
 zakr_znak:
 	pob_znak
+	cmp al,'q'
+	je koniec
 	cmp al,'0'
 	je wys_znak
 	cmp al,'1'
@@ -245,8 +258,24 @@ daj_znak:
 	mov dl,al
 	shl dx,15
 
+usun2:
+	ustaw_kursor 6,32
+	shr edx,15
+	shl edx,15
+	mov [ConsoleChar],20h
+	push edx
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	ustaw_kursor 6,32
+
 zakr1_1:
 	pob_znak
+	cmp al,0dh
+	je enter_loop_part
+	cmp al,'q'
+	je koniec
+	cmp al,08h
+	je usun1
 	cmp al,'0'
 	jae zakr2_1
 	jmp zakr1_1
@@ -267,8 +296,24 @@ wys_modul_1:
 	shr ax,1
 	or dx,ax
 
+usun3:
+	ustaw_kursor 6,33
+	shr edx,12
+	shl edx,12
+	mov [ConsoleChar],20h
+	push edx
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	ustaw_kursor 6,33
+
 zakr1_2:
 	pob_znak
+	cmp al,0dh
+	je enter_loop_part
+	cmp al,'q'
+	je koniec
+	cmp al,08h
+	je usun2
 	cmp al,'0'
 	jae zakr2_2
 	jmp zakr1_2
@@ -289,8 +334,24 @@ wys_modul_2:
 	shr ax,4
 	or dx,ax
 
+usun4:
+	ustaw_kursor 6,34
+	shr edx,9
+	shl edx,9
+	mov [ConsoleChar],20h
+	push edx
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	ustaw_kursor 6,34
+
 zakr1_3:
 	pob_znak
+	cmp al,0dh
+	je enter_loop_part
+	cmp al,'q'
+	je koniec
+	cmp al,08h
+	je usun3
 	cmp al,'0'
 	jae zakr2_3
 	jmp zakr1_3
@@ -310,9 +371,26 @@ wys_modul_3:
 	shl ax,13
 	shr ax,7
 	or dx,ax
+	jmp zakr1_4
+
+usun5:
+	ustaw_kursor 6,35
+	shr edx,6
+	shl edx,6
+	mov [ConsoleChar],20h
+	push edx
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	ustaw_kursor 6,35
 
 zakr1_4:
 	pob_znak
+	cmp al,0dh
+	je enter_loop_part
+	cmp al,'q'
+	je koniec
+	cmp al,08h
+	je usun4
 	cmp al,'0'
 	jae zakr2_4
 	jmp zakr1_4
@@ -333,8 +411,24 @@ wys_modul_4:
 	shr ax,10
 	or dx,ax
 
+usun6:
+	ustaw_kursor 6,36
+	shr edx,3
+	shl edx,3
+	mov [ConsoleChar],20h
+	push edx
+	INVOKE WriteConsole, [consoleOutHandle], ADDR ConsoleChar, 1, 0, 0
+	pop edx
+	ustaw_kursor 6,36
+
 zakr1_5:
 	pob_znak
+	cmp al,0dh
+	je enter_loop_part
+	cmp al,'q'
+	je koniec
+	cmp al,08h
+	je usun5
 	cmp al,'0'
 	jae zakr2_5
 	jmp zakr1_5
@@ -354,13 +448,26 @@ wys_modul_5:
 	shl ax,13
 	shr ax,13
 	or dx,ax
+	jmp enter_loop_part
+
 
 ety7:
 	push edx
-	INVOKE ReadConsole, [consoleInHandle], ADDR ConsoleChar, 1, ADDR evEvents, 0
+enter_loop:
+	pob_znak
+	cmp al,'q'
+	je koniec
+	cmp al,08h
+	je usun6
+	cmp al,0dh
+	jne enter_loop
 	pop edx
 	mov zm1,dx
 	jmp binar
+enter_loop_part:
+	mov zm1,dx
+	jmp binar
+koniec:
 	INVOKE ExitProcess, 0
 main endp
 	public main
